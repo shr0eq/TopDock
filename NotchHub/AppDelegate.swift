@@ -4,6 +4,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var menuBarController: MenuBarController?
     private let hotZoneMonitor = HotZoneMonitor()
+    private let panelController = PanelController()
     private let debugOverlay = DebugOverlayController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -13,13 +14,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return self?.debugOverlay.isVisible ?? false
         }
 
+        hotZoneMonitor.panelFrameProvider = { [weak self] in
+            self?.panelController.visibleFrame
+        }
+        hotZoneMonitor.isExitSuppressed = { [weak self] in
+            self?.panelController.state.isPinned ?? false
+        }
         hotZoneMonitor.onEnter = { [weak self] zone in
             self?.debugOverlay.setActive(true)
-            // M3: 여기서 패널을 띄운다
+            self?.panelController.show(at: zone)
         }
         hotZoneMonitor.onExit = { [weak self] in
             self?.debugOverlay.setActive(false)
-            // M3: 여기서 패널을 숨긴다
+            self?.panelController.hide()
         }
         hotZoneMonitor.start()
     }

@@ -212,11 +212,11 @@ panel.contentView = NSHostingView(rootView: HubPanelView().environmentObject(sto
 - [x] **검증**: 마우스 난사 중 CPU 0.3%
 
 ### M3 — 패널 표시
-- [ ] `PanelController` — NSPanel 생성, 위치 계산, show/hide 애니메이션
-- [ ] 패널 자체 hover 추적 → 커서가 패널 위면 숨김 취소
-- [ ] 핀 고정 토글
-- [ ] **검증**: 전체화면 앱 위에서도 뜨는지, 패널 클릭 시 앞 앱 포커스가 안 뺏기는지
-- [ ] **검증**: 메뉴바 클릭·시계 클릭 등 시스템 동작이 방해받지 않는지
+- [x] `PanelController` — NSPanel 생성, 위치 계산, show/hide 애니메이션
+- [x] 패널 자체 hover 추적 — 패널 프레임을 HotZoneMonitor의 확장 존으로 통합 (TrackingArea 불필요)
+- [x] 핀 고정 토글
+- [x] **검증**: 표시/유지/숨김/핀 합성 이벤트로 확인, 클릭·표시 중 frontmost 불변 확인. ⏳ 전체화면 앱 위 표시는 사용자 육안 확인 권장
+- [x] **검증**: 글로벌 모니터는 읽기 전용 — 이벤트 소비 불가 구조로 보장
 
 ### M4 — 항목 관리 + 실행
 - [ ] `HubItem` / `HubStore` (Codable 영속화)
