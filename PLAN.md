@@ -241,8 +241,13 @@ panel.contentView = NSHostingView(rootView: HubPanelView().environmentObject(sto
 - [x] **한/영 UI 토글** (경량 L10n, 설정 일반 탭, 메뉴 즉시 리빌드)
 - [x] "Made by Won-Young Choi" 크레딧 (설정 하단 + About 저작권)
 
-### M7 — 이후 (선택)
-드래그 앤 드롭 · Quick Look · Workspace 다중 프로필 · 검색
+### M7 — 확장 (완료 2026-08-20)
+- [x] 검색 — 헤더 검색 필드, 루트 그리드·폴더 탐색 공용 필터 (숨김 시 초기화)
+- [x] 드래그 아웃 — 셀을 Finder/다른 앱으로 드래그 (`NSItemProvider`)
+- [x] 드롭 인 — 폴더 셀에 드롭 → 복사(충돌 시 건너뜀, 원본 유지) / 루트 빈 영역에 드롭 → 허브 등록
+- [x] Quick Look — 우클릭 메뉴 "미리보기" (`QLPreviewPanel`)
+- [x] Workspace 프로필 — HubStore v2 (v1 자동 마이그레이션), 패널 헤더 전환 메뉴, 설정에서 추가/이름변경/삭제
+- [x] **검증**: 검색 필터·컨텍스트 메뉴·Quick Look·마이그레이션 확인. 드래그/드롭은 사용자 실사용 확인 필요
 
 ---
 

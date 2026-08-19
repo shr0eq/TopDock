@@ -36,6 +36,14 @@ enum L10n {
     static var open: String { isKorean ? "열기" : "Open" }
     static var revealInFinder: String { isKorean ? "Finder에서 열기" : "Reveal in Finder" }
 
+    static var preview: String { isKorean ? "미리보기" : "Quick Look" }
+    static var search: String { isKorean ? "검색" : "Search" }
+    static var workspace: String { isKorean ? "워크스페이스" : "Workspace" }
+    static var newWorkspace: String { isKorean ? "새 워크스페이스" : "New Workspace" }
+    static var renameWorkspace: String { isKorean ? "이름 변경" : "Rename" }
+    static var deleteWorkspace: String { isKorean ? "워크스페이스 삭제" : "Delete Workspace" }
+    static var workspaceName: String { isKorean ? "워크스페이스 이름" : "Workspace name" }
+
     // 설정
     static var addHelp: String { isKorean ? "폴더·앱·파일 추가" : "Add folders, apps, files" }
     static var removeHelp: String { isKorean ? "선택 항목 제거" : "Remove selected" }

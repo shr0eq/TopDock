@@ -10,3 +10,9 @@ final class PanelNavigation: ObservableObject {
     func pop() { _ = stack.popLast() }
     func reset() { stack.removeAll() }
 }
+
+/// 패널 검색어 (루트 그리드·폴더 탐색 공용 필터)
+final class PanelSearch: ObservableObject {
+    @Published var text = ""
+    func reset() { text = "" }
+}

@@ -5,6 +5,7 @@ struct DirectoryBrowserView: View {
     let url: URL
 
     @EnvironmentObject private var nav: PanelNavigation
+    @EnvironmentObject private var search: PanelSearch
     @AppStorage("browserShowHidden") private var showHidden = false
     @AppStorage("browserSortKey") private var sortKey = SortKey.name.rawValue
 
@@ -34,6 +35,11 @@ struct DirectoryBrowserView: View {
 
     private let columns = [GridItem(.adaptive(minimum: 76), spacing: 8)]
 
+    private var filtered: [Entry] {
+        guard !search.text.isEmpty else { return entries }
+        return entries.filter { $0.name.localizedCaseInsensitiveContains(search.text) }
+    }
+
     var body: some View {
         Group {
             if isLoading {
@@ -52,13 +58,20 @@ struct DirectoryBrowserView: View {
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 10) {
-                        ForEach(entries) { entry in
+                        ForEach(filtered) { entry in
                             EntryCell(entry: entry)
                         }
                     }
                     .padding(12)
                 }
             }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // 현재 폴더로 파일 복사 (빈 영역 드롭)
+        .dropDestination(for: URL.self) { urls, _ in
+            copyDroppedFiles(urls, into: url)
+            Task { await load() }        // 목록 새로고침
+            return true
         }
         .task(id: taskKey) { await load() }
     }
@@ -115,6 +128,7 @@ struct EntryCell: View {
     let entry: DirectoryBrowserView.Entry
     @EnvironmentObject private var nav: PanelNavigation
     @State private var isHovering = false
+    @State private var isDropTargeted = false
 
     var body: some View {
         VStack(spacing: 4) {
@@ -129,10 +143,15 @@ struct EntryCell: View {
         .frame(width: 76, height: 74)
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(isHovering ? Color.primary.opacity(0.08) : .clear)
+                .fill(isDropTargeted ? Color.accentColor.opacity(0.25)
+                      : isHovering ? Color.primary.opacity(0.08) : .clear)
         )
         .onHover { isHovering = $0 }
         .onTapGesture { activate() }
+        .onDrag { NSItemProvider(contentsOf: entry.url) ?? NSItemProvider() }
+        .modifier(FolderDropTarget(
+            folderURL: (entry.isDirectory && entry.url.pathExtension != "app") ? entry.url : nil,
+            isTargeted: $isDropTargeted))
         .contextMenu {
             Button(L10n.open) {
                 NSWorkspace.shared.open(entry.url)
@@ -141,6 +160,9 @@ struct EntryCell: View {
             Button(L10n.revealInFinder) {
                 NSWorkspace.shared.activateFileViewerSelecting([entry.url])
                 NotificationCenter.default.post(name: .hubItemActivated, object: nil)
+            }
+            Button(L10n.preview) {
+                QuickLookController.shared.show(entry.url)
             }
         }
         .help(entry.url.path)

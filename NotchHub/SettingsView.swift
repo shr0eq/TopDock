@@ -24,6 +24,8 @@ struct SettingsView: View {
 
     private var itemsTab: some View {
         VStack(spacing: 0) {
+            workspaceBar
+            Divider()
             List(selection: $selection) {
                 ForEach(store.items) { item in
                     HStack(spacing: 8) {
@@ -65,6 +67,58 @@ struct SettingsView: View {
             .buttonStyle(.borderless)
             .padding(10)
         }
+    }
+
+    // MARK: 워크스페이스 바
+
+    @State private var renameText = ""
+    @State private var isRenaming = false
+
+    private var workspaceBar: some View {
+        HStack(spacing: 8) {
+            Picker(L10n.workspace, selection: Binding(
+                get: { store.current?.id ?? UUID() },
+                set: { store.select($0) })) {
+                ForEach(store.workspaces) { ws in
+                    Text(ws.name).tag(ws.id)
+                }
+            }
+            .labelsHidden()
+            .frame(maxWidth: 180)
+
+            if isRenaming {
+                TextField(L10n.workspaceName, text: $renameText)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 140)
+                    .onSubmit {
+                        if !renameText.isEmpty { store.renameCurrent(to: renameText) }
+                        isRenaming = false
+                    }
+            } else {
+                Button {
+                    renameText = store.current?.name ?? ""
+                    isRenaming = true
+                } label: { Image(systemName: "pencil") }
+                    .buttonStyle(.borderless)
+                    .help(L10n.renameWorkspace)
+            }
+
+            Button {
+                store.addWorkspace(name: L10n.newWorkspace)
+            } label: { Image(systemName: "plus.rectangle.on.rectangle") }
+                .buttonStyle(.borderless)
+                .help(L10n.newWorkspace)
+
+            Button {
+                store.removeCurrentWorkspace()
+            } label: { Image(systemName: "trash") }
+                .buttonStyle(.borderless)
+                .disabled(store.workspaces.count < 2)
+                .help(L10n.deleteWorkspace)
+
+            Spacer()
+        }
+        .padding(10)
     }
 
     // MARK: 일반 탭

@@ -3,6 +3,8 @@ import SwiftUI
 struct HubPanelView: View {
     @EnvironmentObject private var state: PanelController.State
     @EnvironmentObject private var nav: PanelNavigation
+    @EnvironmentObject private var store: HubStore
+    @EnvironmentObject private var search: PanelSearch
     @AppStorage("browserShowHidden") private var showHidden = false
     @AppStorage("browserSortKey") private var sortKey = DirectoryBrowserView.SortKey.name.rawValue
 
@@ -49,6 +51,8 @@ struct HubPanelView: View {
 
                 Spacer()
 
+                searchField
+
                 Menu {
                     Picker(L10n.sortLabel, selection: $sortKey) {
                         ForEach(DirectoryBrowserView.SortKey.allCases, id: \.rawValue) { key in
@@ -72,12 +76,32 @@ struct HubPanelView: View {
                 .buttonStyle(.plain)
                 .help(L10n.revealInFinder)
             } else {
-                // ── 루트: 타이틀 ──
+                // ── 루트: 워크스페이스 메뉴 ──
                 Image(systemName: "rectangle.topthird.inset.filled")
                     .foregroundStyle(.secondary)
-                Text("NotchHub")
-                    .font(.headline)
+
+                Menu {
+                    ForEach(store.workspaces) { ws in
+                        Button {
+                            store.select(ws.id)
+                        } label: {
+                            if ws.id == store.current?.id {
+                                Label(ws.name, systemImage: "checkmark")
+                            } else {
+                                Text(ws.name)
+                            }
+                        }
+                    }
+                } label: {
+                    Text(store.current?.name ?? "NotchHub")
+                        .font(.headline)
+                }
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+
                 Spacer()
+
+                searchField
             }
 
             Button {
@@ -89,5 +113,28 @@ struct HubPanelView: View {
             .buttonStyle(.plain)
             .help(state.isPinned ? L10n.unpin : L10n.pin)
         }
+    }
+
+    private var searchField: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "magnifyingglass")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField(L10n.search, text: $search.text)
+                .textFieldStyle(.plain)
+                .font(.callout)
+                .frame(width: 90)
+            if !search.text.isEmpty {
+                Button { search.reset() } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(Color.primary.opacity(0.06), in: Capsule())
     }
 }
