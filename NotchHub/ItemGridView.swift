@@ -8,6 +8,28 @@ extension Notification.Name {
     static let openSettingsRequested = Notification.Name("NotchHub.openSettingsRequested")
 }
 
+/// Finder 드래그는 public.file-url을 제공하므로 NSItemProvider에서 직접 추출한다.
+/// (.dropDestination(for: URL.self)은 public.url만 매칭해 Finder 드롭을 놓친다)
+func loadDroppedURLs(from providers: [NSItemProvider], completion: @escaping ([URL]) -> Void) {
+    var urls: [URL] = []
+    let group = DispatchGroup()
+    let lock = NSLock()
+    for provider in providers where provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) {
+        group.enter()
+        provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
+            defer { group.leave() }
+            var url: URL?
+            if let data = item as? Data {
+                url = URL(dataRepresentation: data, relativeTo: nil)
+            } else if let u = item as? URL {
+                url = u
+            }
+            if let url { lock.lock(); urls.append(url); lock.unlock() }
+        }
+    }
+    group.notify(queue: .main) { completion(urls) }
+}
+
 /// 드롭된 파일을 폴더로 복사 (이름 충돌 시 건너뜀, 원본 유지)
 func copyDroppedFiles(_ urls: [URL], into folder: URL) {
     DispatchQueue.global(qos: .userInitiated).async {
@@ -52,10 +74,11 @@ struct ItemGridView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // 빈 영역에 파일을 떨어뜨리면 허브에 등록
-        .dropDestination(for: URL.self) { urls, _ in
-            store.add(urls: urls)
+        .onDrop(of: [.fileURL], isTargeted: $isDropTargeted) { providers in
+            guard providers.contains(where: { $0.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) }) else { return false }
+            loadDroppedURLs(from: providers) { store.add(urls: $0) }
             return true
-        } isTargeted: { isDropTargeted = $0 }
+        }
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .strokeBorder(Color.accentColor, lineWidth: isDropTargeted ? 2 : 0)
@@ -104,7 +127,7 @@ struct ItemCell: View {
         )
         .onHover { isHovering = $0 }
         .onTapGesture { activate() }
-        .onDrag { NSItemProvider(contentsOf: item.url) ?? NSItemProvider() }
+        .onDrag { NSItemProvider(object: item.url as NSURL) }
         .modifier(FolderDropTarget(folderURL: item.kind == .folder ? item.url : nil,
                                    isTargeted: $isDropTargeted))
         .contextMenu {
@@ -143,10 +166,11 @@ struct FolderDropTarget: ViewModifier {
 
     func body(content: Content) -> some View {
         if let folderURL {
-            content.dropDestination(for: URL.self) { urls, _ in
-                copyDroppedFiles(urls, into: folderURL)
+            content.onDrop(of: [.fileURL], isTargeted: $isTargeted) { providers in
+                guard providers.contains(where: { $0.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) }) else { return false }
+                loadDroppedURLs(from: providers) { copyDroppedFiles($0, into: folderURL) }
                 return true
-            } isTargeted: { isTargeted = $0 }
+            }
         } else {
             content
         }

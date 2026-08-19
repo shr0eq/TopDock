@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// 폴더 내부 파일/하위폴더를 그리드로 표시. 나열은 백그라운드 큐에서.
 struct DirectoryBrowserView: View {
@@ -12,6 +13,7 @@ struct DirectoryBrowserView: View {
     @State private var entries: [Entry] = []
     @State private var isLoading = true
     @State private var loadError: String?
+    @State private var reloadTick = 0
 
     enum SortKey: String, CaseIterable {
         case name, date, size
@@ -68,15 +70,24 @@ struct DirectoryBrowserView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // 현재 폴더로 파일 복사 (빈 영역 드롭)
-        .dropDestination(for: URL.self) { urls, _ in
-            copyDroppedFiles(urls, into: url)
-            Task { await load() }        // 목록 새로고침
+        .onDrop(of: [.fileURL], isTargeted: .constant(false)) { providers in
+            guard providers.contains(where: { $0.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier) }) else { return false }
+            let target = url
+            loadDroppedURLs(from: providers) { urls in
+                copyDroppedFiles(urls, into: target)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    NotificationCenter.default.post(name: .browserNeedsReload, object: nil)
+                }
+            }
             return true
         }
         .task(id: taskKey) { await load() }
+        .onReceive(NotificationCenter.default.publisher(for: .browserNeedsReload)) { _ in
+            reloadTick += 1
+        }
     }
 
-    private var taskKey: String { "\(url.path)|\(showHidden)|\(sortKey)" }
+    private var taskKey: String { "\(url.path)|\(showHidden)|\(sortKey)|\(reloadTick)" }
 
     private func load() async {
         isLoading = true
@@ -124,6 +135,10 @@ struct DirectoryBrowserView: View {
     }
 }
 
+extension Notification.Name {
+    static let browserNeedsReload = Notification.Name("NotchHub.browserNeedsReload")
+}
+
 struct EntryCell: View {
     let entry: DirectoryBrowserView.Entry
     @EnvironmentObject private var nav: PanelNavigation
@@ -148,7 +163,7 @@ struct EntryCell: View {
         )
         .onHover { isHovering = $0 }
         .onTapGesture { activate() }
-        .onDrag { NSItemProvider(contentsOf: entry.url) ?? NSItemProvider() }
+        .onDrag { NSItemProvider(object: entry.url as NSURL) }
         .modifier(FolderDropTarget(
             folderURL: (entry.isDirectory && entry.url.pathExtension != "app") ? entry.url : nil,
             isTargeted: $isDropTargeted))
