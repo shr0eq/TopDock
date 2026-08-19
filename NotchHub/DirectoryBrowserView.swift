@@ -92,6 +92,7 @@ struct DirectoryBrowserView: View {
     private func load() async {
         isLoading = true
         loadError = nil
+        let startKey = taskKey          // 시작 시점 키 캡처 (뒤늦은 결과 판별용)
         let target = url
         let hidden = showHidden
         let key = SortKey(rawValue: sortKey) ?? .name
@@ -126,7 +127,7 @@ struct DirectoryBrowserView: View {
             }
         }.value
 
-        guard taskKey == "\(target.path)|\(hidden)|\(key.rawValue)" else { return }  // 뒤늦은 결과 무시
+        guard taskKey == startKey else { return }  // 뒤늦은 결과 무시
         switch result {
         case .success(let list): entries = list
         case .failure(let error): loadError = error.localizedDescription
