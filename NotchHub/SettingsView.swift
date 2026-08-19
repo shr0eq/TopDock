@@ -1,11 +1,28 @@
 import SwiftUI
 import AppKit
+import ServiceManagement
 
 struct SettingsView: View {
     @EnvironmentObject private var store: HubStore
     @State private var selection: UUID?
+    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @AppStorage(L10n.languageKey) private var language = "ko"
+    @AppStorage("externalZoneWidth") private var externalZoneWidth = 180.0
 
     var body: some View {
+        TabView {
+            itemsTab
+                .tabItem { Label(L10n.isKorean ? "항목" : "Items", systemImage: "square.grid.2x2") }
+            generalTab
+                .tabItem { Label(L10n.isKorean ? "일반" : "General", systemImage: "gearshape") }
+        }
+        .frame(width: 480, height: 380)
+        .id(language)   // 언어 변경 시 UI 갱신
+    }
+
+    // MARK: 항목 탭
+
+    private var itemsTab: some View {
         VStack(spacing: 0) {
             List(selection: $selection) {
                 ForEach(store.items) { item in
@@ -29,35 +46,69 @@ struct SettingsView: View {
             Divider()
 
             HStack(spacing: 12) {
-                Button {
-                    addItems()
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .help("폴더·앱·파일 추가")
-
+                Button { addItems() } label: { Image(systemName: "plus") }
+                    .help(L10n.addHelp)
                 Button {
                     if let sel = selection,
                        let item = store.items.first(where: { $0.id == sel }) {
                         store.remove(item)
                         selection = nil
                     }
-                } label: {
-                    Image(systemName: "minus")
-                }
-                .disabled(selection == nil)
-                .help("선택 항목 제거")
-
+                } label: { Image(systemName: "minus") }
+                    .disabled(selection == nil)
+                    .help(L10n.removeHelp)
                 Spacer()
-
-                Text("드래그로 순서 변경 · Made by Won-Young Choi")
+                Text(L10n.dragToReorder)
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
             .buttonStyle(.borderless)
             .padding(10)
         }
-        .frame(width: 480, height: 340)
+    }
+
+    // MARK: 일반 탭
+
+    private var generalTab: some View {
+        Form {
+            Toggle(L10n.launchAtLogin, isOn: $launchAtLogin)
+                .onChange(of: launchAtLogin) { _, enable in
+                    do {
+                        if enable { try SMAppService.mainApp.register() }
+                        else { try SMAppService.mainApp.unregister() }
+                    } catch {
+                        launchAtLogin = SMAppService.mainApp.status == .enabled
+                    }
+                }
+
+            Picker(L10n.language, selection: $language) {
+                Text("한국어").tag("ko")
+                Text("English").tag("en")
+            }
+            .onChange(of: language) { _, new in
+                L10n.set(korean: new == "ko")
+            }
+
+            VStack(alignment: .leading) {
+                Slider(value: $externalZoneWidth, in: 80...400, step: 20) {
+                    Text(L10n.externalZoneWidth)
+                }
+                Text("\(Int(externalZoneWidth)) pt")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .onChange(of: externalZoneWidth) { _, new in
+                ScreenGeometry.fallbackWidth = new
+                NotificationCenter.default.post(name: .externalZoneWidthChanged, object: nil)
+            }
+
+            LabeledContent(L10n.hotKeyHint) { EmptyView() }
+
+            Text("Made by Won-Young Choi")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .formStyle(.grouped)
     }
 
     private func addItems() {
@@ -65,11 +116,15 @@ struct SettingsView: View {
         panel.canChooseFiles = true
         panel.canChooseDirectories = true
         panel.allowsMultipleSelection = true
-        panel.treatsFilePackagesAsDirectories = false   // .app을 파일로 취급
-        panel.prompt = "추가"
-        panel.message = "패널에 등록할 폴더, 앱, 파일을 선택하세요"
+        panel.treatsFilePackagesAsDirectories = false
+        panel.prompt = L10n.addPrompt
+        panel.message = L10n.addMessage
         if panel.runModal() == .OK {
             store.add(urls: panel.urls)
         }
     }
+}
+
+extension Notification.Name {
+    static let externalZoneWidthChanged = Notification.Name("NotchHub.externalZoneWidthChanged")
 }

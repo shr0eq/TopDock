@@ -10,8 +10,11 @@ enum ScreenGeometry {
         let hasNotch: Bool
     }
 
-    /// 노치 없는 화면용 가상 핫존 크기 (추후 설정으로 노출)
-    static var fallbackWidth: CGFloat = 180
+    /// 노치 없는 화면용 가상 핫존 크기 (설정에서 조절)
+    static var fallbackWidth: CGFloat = {
+        let saved = UserDefaults.standard.double(forKey: "externalZoneWidth")
+        return saved > 0 ? saved : 180
+    }()
     static var fallbackHeight: CGFloat = 4
 
     static func hotZone(for screen: NSScreen) -> HotZone {

@@ -37,7 +37,7 @@ struct HubPanelView: View {
                     Image(systemName: "chevron.left")
                 }
                 .buttonStyle(.plain)
-                .help("뒤로")
+                .help(L10n.back)
 
                 Image(nsImage: IconCache.icon(forPath: current.path, size: 18))
                     .resizable()
@@ -50,18 +50,18 @@ struct HubPanelView: View {
                 Spacer()
 
                 Menu {
-                    Picker("정렬", selection: $sortKey) {
+                    Picker(L10n.sortLabel, selection: $sortKey) {
                         ForEach(DirectoryBrowserView.SortKey.allCases, id: \.rawValue) { key in
-                            Text(key.label).tag(key.rawValue)
+                            Text(key.localized).tag(key.rawValue)
                         }
                     }
-                    Toggle("숨김 파일 표시", isOn: $showHidden)
+                    Toggle(L10n.showHiddenFiles, isOn: $showHidden)
                 } label: {
                     Image(systemName: "arrow.up.arrow.down")
                 }
                 .menuStyle(.borderlessButton)
                 .fixedSize()
-                .help("정렬·숨김 파일")
+                .help(L10n.sortAndHidden)
 
                 Button {
                     NSWorkspace.shared.activateFileViewerSelecting([current])
@@ -70,7 +70,7 @@ struct HubPanelView: View {
                     Image(systemName: "arrow.up.forward.app")
                 }
                 .buttonStyle(.plain)
-                .help("Finder에서 열기")
+                .help(L10n.revealInFinder)
             } else {
                 // ── 루트: 타이틀 ──
                 Image(systemName: "rectangle.topthird.inset.filled")
@@ -87,7 +87,7 @@ struct HubPanelView: View {
                     .foregroundStyle(state.isPinned ? Color.accentColor : .secondary)
             }
             .buttonStyle(.plain)
-            .help(state.isPinned ? "핀 해제" : "핀 고정")
+            .help(state.isPinned ? L10n.unpin : L10n.pin)
         }
     }
 }

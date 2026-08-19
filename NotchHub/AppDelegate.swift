@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let hotZoneMonitor = HotZoneMonitor()
     private var panelController: PanelController!
     private let debugOverlay = DebugOverlayController()
+    private let hotKeyManager = HotKeyManager()
     private var observers: [NSObjectProtocol] = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -43,6 +44,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         hotZoneMonitor.start()
 
+        // 전역 단축키 ⌥Space → 패널 토글
+        hotKeyManager.onHotKey = { [weak self] in
+            guard let self else { return }
+            if self.panelController.isVisible {
+                self.panelController.state.isPinned = false
+                self.panelController.hide()
+            } else if let screen = NSScreen.main ?? NSScreen.screens.first {
+                self.panelController.show(at: ScreenGeometry.hotZone(for: screen))
+                self.hotZoneMonitor.markEntered()
+            }
+        }
+        hotKeyManager.register()
+
+        // 설정에서 외장 핫존 너비 변경 시 존 재계산
+        observers.append(NotificationCenter.default.addObserver(
+            forName: .externalZoneWidthChanged, object: nil, queue: .main) { [weak self] _ in
+            self?.hotZoneMonitor.rebuildZones()
+        })
+
         #if DEBUG
         // 테스트 자동화용: 셸에서 패널 열기 트리거
         //   notifyutil 대신: distributed notification
@@ -68,6 +88,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        hotKeyManager.unregister()
         hotZoneMonitor.stop()
         observers.forEach(NotificationCenter.default.removeObserver)
     }

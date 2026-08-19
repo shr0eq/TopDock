@@ -32,9 +32,9 @@ struct ItemGridView: View {
             Image(systemName: "folder.badge.plus")
                 .font(.system(size: 32))
                 .foregroundStyle(.secondary)
-            Text("등록된 항목이 없습니다")
+            Text(L10n.noItems)
                 .foregroundStyle(.secondary)
-            Button("설정에서 추가…") {
+            Button(L10n.addInSettings) {
                 NotificationCenter.default.post(name: .openSettingsRequested, object: nil)
             }
         }

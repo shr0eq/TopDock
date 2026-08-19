@@ -233,13 +233,13 @@ panel.contentView = NSHostingView(rootView: HubPanelView().environmentObject(sto
 - [x] **검증**: 2단계 심층 진입·뒤로 가기 확인. 나열은 백그라운드 Task + LazyVGrid (대용량 실사용 검증은 사용 중 관찰)
 
 ### M6 — 마감
-- [ ] 전역 단축키 (`HotKeyManager`)
-- [ ] 로그인 시 자동 실행 (`SMAppService.mainApp`)
-- [ ] 다크/라이트 모드, 재질(`NSVisualEffectView` blur)
-- [ ] 앱 아이콘
-- [ ] 로컬 코드사인 + 배포용 `.app` 빌드
-- [ ] **한/영 UI 토글** (선호 사항)
-- [ ] "Made by Won-Young Choi" 크레딧 표기
+- [x] 전역 단축키 ⌥Space 토글 (`HotKeyManager`, Carbon — 접근성 권한 불필요)
+- [x] 로그인 시 자동 실행 토글 (`SMAppService.mainApp`, 설정 일반 탭) — 실동작은 사용자 확인
+- [x] 다크/라이트 — `.ultraThinMaterial` 자동 대응
+- [x] 앱 아이콘 (CoreGraphics 생성: 노치 스트립 + 폴더, 전체 사이즈 세트)
+- [x] 로컬 adhoc 사인 + Release 빌드 → /Applications 설치·스모크 테스트 통과
+- [x] **한/영 UI 토글** (경량 L10n, 설정 일반 탭, 메뉴 즉시 리빌드)
+- [x] "Made by Won-Young Choi" 크레딧 (설정 하단 + About 저작권)
 
 ### M7 — 이후 (선택)
 드래그 앤 드롭 · Quick Look · Workspace 다중 프로필 · 검색

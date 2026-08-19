@@ -14,11 +14,11 @@ struct DirectoryBrowserView: View {
 
     enum SortKey: String, CaseIterable {
         case name, date, size
-        var label: String {
+        var localized: String {
             switch self {
-            case .name: return "이름"
-            case .date: return "수정일"
-            case .size: return "크기"
+            case .name: return L10n.sortName
+            case .date: return L10n.sortDate
+            case .size: return L10n.sortSize
             }
         }
     }
@@ -46,7 +46,7 @@ struct DirectoryBrowserView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if entries.isEmpty {
-                Text("비어 있음")
+                Text(L10n.emptyFolder)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {

@@ -13,6 +13,7 @@ final class MenuBarController: NSObject {
     private var statusItem: NSStatusItem!
     private var settingsWindow: NSWindow?
     private var debugItem: NSMenuItem!
+    private var languageObserver: NSObjectProtocol?
 
     init(store: HubStore) {
         self.store = store
@@ -23,36 +24,41 @@ final class MenuBarController: NSObject {
                                    accessibilityDescription: "NotchHub")
         }
         statusItem.menu = buildMenu()
+        languageObserver = NotificationCenter.default.addObserver(
+            forName: .languageChanged, object: nil, queue: .main) { [weak self] _ in
+            self?.statusItem.menu = self?.buildMenu()
+            self?.settingsWindow?.title = L10n.settingsTitle
+        }
     }
 
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
 
-        let showPanel = NSMenuItem(title: "패널 열기", action: #selector(showPanelAction), keyEquivalent: "o")
+        let showPanel = NSMenuItem(title: L10n.showPanel, action: #selector(showPanelAction), keyEquivalent: "o")
         showPanel.target = self
         menu.addItem(showPanel)
 
         menu.addItem(.separator())
 
-        let settings = NSMenuItem(title: "설정…", action: #selector(openSettings), keyEquivalent: ",")
+        let settings = NSMenuItem(title: L10n.settings, action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
 
         menu.addItem(.separator())
 
-        debugItem = NSMenuItem(title: "디버그: 핫존 표시", action: #selector(toggleDebug), keyEquivalent: "d")
+        debugItem = NSMenuItem(title: L10n.debugHotZones, action: #selector(toggleDebug), keyEquivalent: "d")
         debugItem.target = self
         menu.addItem(debugItem)
 
         menu.addItem(.separator())
 
-        let about = NSMenuItem(title: "NotchHub 정보", action: #selector(openAbout), keyEquivalent: "")
+        let about = NSMenuItem(title: L10n.about, action: #selector(openAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
 
         menu.addItem(.separator())
 
-        let quit = NSMenuItem(title: "종료", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let quit = NSMenuItem(title: L10n.quit, action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.addItem(quit)
 
         return menu
@@ -72,10 +78,10 @@ final class MenuBarController: NSObject {
     @objc private func openSettings() {
         if settingsWindow == nil {
             let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 480, height: 320),
+                contentRect: NSRect(x: 0, y: 0, width: 480, height: 380),
                 styleMask: [.titled, .closable, .miniaturizable],
                 backing: .buffered, defer: false)
-            window.title = "NotchHub 설정"
+            window.title = L10n.settingsTitle
             window.contentView = NSHostingView(rootView: SettingsView().environmentObject(store))
             window.isReleasedWhenClosed = false
             window.center()
