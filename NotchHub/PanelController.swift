@@ -63,7 +63,7 @@ final class PanelController {
         if state.isPinned { return }
         isVisible = false
         NSAnimationContext.runAnimationGroup({
-            $0.duration = 0.14
+            $0.duration = 0.10
             p.animator().alphaValue = 0
         }, completionHandler: {
             if !self.isVisible {

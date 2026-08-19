@@ -18,8 +18,9 @@ final class HotZoneMonitor {
 
     /// 스쳐 지나갈 때 오작동 방지: 이 시간 이상 머물러야 진입으로 판정
     var dwellDelay: TimeInterval = 0.25
-    /// 이탈 후 이 시간이 지나야 나간 것으로 판정 (핫존→패널 이동 여유)
-    var hideDelay: TimeInterval = 0.40
+    /// 이탈 후 이 시간이 지나야 나간 것으로 판정 (핫존→패널 이동 여유).
+    /// Dock처럼 즉각 사라지는 느낌 — 노치 스트립→패널 이동(~30pt)만 버티면 됨.
+    var hideDelay: TimeInterval = 0.15
 
     private let log = Logger(subsystem: "com.wonyoungchoi.NotchHub", category: "hotzone")
 
