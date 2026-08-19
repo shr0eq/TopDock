@@ -33,6 +33,7 @@ final class HotZoneMonitor {
     private var globalMonitor: Any?
     private var localMonitor: Any?
     private var location: Location = .outside     // 상태 가드
+    private var hasEntered = false                 // onEnter 전달 여부 (스침 시 EXIT 방지)
     private var pendingWork: DispatchWorkItem?
     private var screenObserver: NSObjectProtocol?
 
@@ -61,6 +62,9 @@ final class HotZoneMonitor {
         if let o = screenObserver { NotificationCenter.default.removeObserver(o); screenObserver = nil }
         pendingWork?.cancel()
     }
+
+    /// 패널을 hover 없이(메뉴/단축키) 표시했을 때 호출 — 이후 이탈 시 자동 숨김이 동작하게 함
+    func markEntered() { hasEntered = true }
 
     func rebuildZones() {
         zones = ScreenGeometry.allHotZones()
@@ -97,6 +101,7 @@ final class HotZoneMonitor {
             let zone = zones[idx]
             let work = DispatchWorkItem { [weak self] in
                 guard let self, self.location == .zone(idx) else { return }
+                self.hasEntered = true
                 self.log.notice("ENTER zone[\(idx)] notch=\(zone.hasNotch)")
                 self.onEnter?(zone)
             }
@@ -107,9 +112,11 @@ final class HotZoneMonitor {
             break   // 패널 위에 있는 동안은 아무것도 하지 않는다
 
         case (_, .outside) where before != .outside:
+            guard hasEntered else { break }          // 진입 확정 전 스침은 무시
             let work = DispatchWorkItem { [weak self] in
                 guard let self, self.location == .outside else { return }
                 if self.isExitSuppressed?() == true { return }
+                self.hasEntered = false
                 self.log.notice("EXIT")
                 self.onExit?()
             }

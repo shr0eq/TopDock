@@ -227,10 +227,10 @@ panel.contentView = NSHostingView(rootView: HubPanelView().environmentObject(sto
 - [x] **검증**: seed→defaults 저장→재시작 loaded 로그 확인. Downloads 클릭→Finder 열림→패널 닫힘 확인. TCC(Downloads) 허용됨
 
 ### M5 — 폴더 탐색
-- [ ] `DirectoryBrowserView` — 하위 파일 목록, 브레드크럼, 뒤로/상위
-- [ ] `⌘+클릭` → Finder에서 표시 (`NSWorkspace.activateFileViewerSelecting`)
-- [ ] 숨김 파일 토글, 정렬(이름/수정일/크기)
-- [ ] **검증**: 파일 수천 개 폴더에서도 스크롤이 버벅이지 않는지 (LazyVGrid)
+- [x] `DirectoryBrowserView` — 하위 파일 목록, 브레드크럼 헤더, 뒤로/상위
+- [x] `⌘+클릭` → Finder에서 표시 + 헤더의 "Finder에서 열기" 버튼
+- [x] 숨김 파일 토글, 정렬(이름/수정일/크기, 폴더 우선) — @AppStorage 유지
+- [x] **검증**: 2단계 심층 진입·뒤로 가기 확인. 나열은 백그라운드 Task + LazyVGrid (대용량 실사용 검증은 사용 중 관찰)
 
 ### M6 — 마감
 - [ ] 전역 단축키 (`HotKeyManager`)

@@ -16,6 +16,7 @@ final class PanelController {
     }
 
     let state = State()
+    let navigation = PanelNavigation()
     private let store: HubStore
 
     init(store: HubStore) {
@@ -64,7 +65,10 @@ final class PanelController {
             $0.duration = 0.14
             p.animator().alphaValue = 0
         }, completionHandler: {
-            if !self.isVisible { p.orderOut(nil) }
+            if !self.isVisible {
+                p.orderOut(nil)
+                self.navigation.reset()      // 다음 표시는 루트에서 시작
+            }
         })
     }
 
@@ -80,7 +84,7 @@ final class PanelController {
         p.hidesOnDeactivate = false
         p.becomesKeyOnlyIfNeeded = true
         p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
-        p.contentView = NSHostingView(rootView: HubPanelView().environmentObject(state).environmentObject(store))
+        p.contentView = NSHostingView(rootView: HubPanelView().environmentObject(state).environmentObject(store).environmentObject(navigation))
         panel = p
         return p
     }

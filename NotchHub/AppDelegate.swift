@@ -21,6 +21,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.debugOverlay.toggle()
             return self?.debugOverlay.isVisible ?? false
         }
+        menuBarController?.onShowPanel = { [weak self] in
+            guard let self, let screen = NSScreen.main ?? NSScreen.screens.first else { return }
+            self.panelController.show(at: ScreenGeometry.hotZone(for: screen))
+            self.hotZoneMonitor.markEntered()   // 이탈 시 자동 숨김 활성화
+        }
 
         hotZoneMonitor.panelFrameProvider = { [weak self] in
             self?.panelController.visibleFrame
@@ -37,6 +42,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.panelController.hide()
         }
         hotZoneMonitor.start()
+
+        #if DEBUG
+        // 테스트 자동화용: 셸에서 패널 열기 트리거
+        //   notifyutil 대신: distributed notification
+        DistributedNotificationCenter.default().addObserver(
+            forName: Notification.Name("NotchHub.test.showPanel"),
+            object: nil, queue: .main) { [weak self] _ in
+            guard let self, let screen = NSScreen.main ?? NSScreen.screens.first else { return }
+            self.panelController.show(at: ScreenGeometry.hotZone(for: screen))
+            self.hotZoneMonitor.markEntered()
+        }
+        #endif
 
         // 항목 실행 → 패널 닫기 (핀 시 유지)
         observers.append(NotificationCenter.default.addObserver(

@@ -6,6 +6,8 @@ final class MenuBarController: NSObject {
 
     /// 토글 후의 표시 상태를 반환하는 클로저
     var onToggleDebugOverlay: (() -> Bool)?
+    /// 메뉴에서 패널 열기
+    var onShowPanel: (() -> Void)?
 
     private let store: HubStore
     private var statusItem: NSStatusItem!
@@ -25,6 +27,12 @@ final class MenuBarController: NSObject {
 
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
+
+        let showPanel = NSMenuItem(title: "패널 열기", action: #selector(showPanelAction), keyEquivalent: "o")
+        showPanel.target = self
+        menu.addItem(showPanel)
+
+        menu.addItem(.separator())
 
         let settings = NSMenuItem(title: "설정…", action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
@@ -48,6 +56,10 @@ final class MenuBarController: NSObject {
         menu.addItem(quit)
 
         return menu
+    }
+
+    @objc private func showPanelAction() {
+        onShowPanel?()
     }
 
     @objc private func toggleDebug() {

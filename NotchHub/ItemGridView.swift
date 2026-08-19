@@ -44,6 +44,7 @@ struct ItemGridView: View {
 
 struct ItemCell: View {
     let item: HubItem
+    @EnvironmentObject private var nav: PanelNavigation
     @State private var isHovering = false
 
     var body: some View {
@@ -67,14 +68,16 @@ struct ItemCell: View {
     }
 
     private func activate() {
-        let modifiers = NSEvent.modifierFlags
-        if modifiers.contains(.command) {
+        if NSEvent.modifierFlags.contains(.command) {
             // ⌘+클릭 → Finder에서 표시
             NSWorkspace.shared.activateFileViewerSelecting([item.url])
+            NotificationCenter.default.post(name: .hubItemActivated, object: nil)
+        } else if item.kind == .folder {
+            // 폴더 → 패널 안에서 탐색
+            nav.push(item.url)
         } else {
-            // M5에서 폴더는 인패널 탐색으로 전환 예정. M4에서는 모두 열기.
             NSWorkspace.shared.open(item.url)
+            NotificationCenter.default.post(name: .hubItemActivated, object: nil)
         }
-        NotificationCenter.default.post(name: .hubItemActivated, object: nil)
     }
 }
