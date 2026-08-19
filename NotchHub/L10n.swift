@@ -33,6 +33,7 @@ enum L10n {
     static var sortDate: String { isKorean ? "수정일" : "Date Modified" }
     static var sortSize: String { isKorean ? "크기" : "Size" }
     static var showHiddenFiles: String { isKorean ? "숨김 파일 표시" : "Show Hidden Files" }
+    static var open: String { isKorean ? "열기" : "Open" }
     static var revealInFinder: String { isKorean ? "Finder에서 열기" : "Reveal in Finder" }
 
     // 설정

@@ -67,16 +67,33 @@ final class HotZoneMonitor {
     func markEntered() { hasEntered = true }
 
     func rebuildZones() {
-        zones = ScreenGeometry.allHotZones()
+        let fresh = ScreenGeometry.allHotZones()
+
+        // 메뉴바 표시/숨김 등으로 didChangeScreenParameters가 연발되어도
+        // 기하가 같으면 상태를 유지한다 — 리셋하면 dwell 중인 ENTER가 무효화된다.
+        let unchanged = fresh.count == zones.count
+            && zip(fresh, zones).allSatisfy { $0.rect == $1.rect && $0.hasNotch == $1.hasNotch }
+        zones = fresh                      // 스크린 참조는 항상 최신으로 교체
+        guard !unchanged else { return }
+
         location = .outside
+        hasEntered = false
+        pendingWork?.cancel()
         for (i, z) in zones.enumerated() {
             log.notice("zone[\(i)] rect=\(String(describing: z.rect), privacy: .public) notch=\(z.hasNotch) screen=\(z.screen.localizedName, privacy: .public)")
         }
         NotificationCenter.default.post(name: .hotZonesDidChange, object: nil)
     }
 
+    /// 화면 최상단에서는 커서 y가 frame.maxY에 고정되는데 NSRect.contains는
+    /// 상단 경계를 배타 취급하므로, 경계 포함으로 직접 판정한다.
+    private func zoneContains(_ rect: NSRect, _ p: NSPoint) -> Bool {
+        p.x >= rect.minX && p.x <= rect.maxX &&
+        p.y >= rect.minY && p.y <= rect.maxY
+    }
+
     private func currentLocation(of point: NSPoint) -> Location {
-        if let idx = zones.firstIndex(where: { $0.rect.contains(point) }) {
+        if let idx = zones.firstIndex(where: { zoneContains($0.rect, point) }) {
             return .zone(idx)
         }
         if let frame = panelFrameProvider?(), frame.contains(point) {

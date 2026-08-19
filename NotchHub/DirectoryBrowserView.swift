@@ -133,6 +133,16 @@ struct EntryCell: View {
         )
         .onHover { isHovering = $0 }
         .onTapGesture { activate() }
+        .contextMenu {
+            Button(L10n.open) {
+                NSWorkspace.shared.open(entry.url)
+                NotificationCenter.default.post(name: .hubItemActivated, object: nil)
+            }
+            Button(L10n.revealInFinder) {
+                NSWorkspace.shared.activateFileViewerSelecting([entry.url])
+                NotificationCenter.default.post(name: .hubItemActivated, object: nil)
+            }
+        }
         .help(entry.url.path)
     }
 

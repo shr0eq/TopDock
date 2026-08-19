@@ -64,6 +64,16 @@ struct ItemCell: View {
         )
         .onHover { isHovering = $0 }
         .onTapGesture { activate() }
+        .contextMenu {
+            Button(L10n.open) {
+                NSWorkspace.shared.open(item.url)
+                NotificationCenter.default.post(name: .hubItemActivated, object: nil)
+            }
+            Button(L10n.revealInFinder) {
+                NSWorkspace.shared.activateFileViewerSelecting([item.url])
+                NotificationCenter.default.post(name: .hubItemActivated, object: nil)
+            }
+        }
         .help(item.url.path)
     }
 
