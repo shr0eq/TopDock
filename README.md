@@ -42,11 +42,12 @@ Requires an Apple Silicon Mac running macOS 14 or later.
 ```bash
 git clone https://github.com/shr0eq/TopDock.git
 cd TopDock
-xcodebuild -project NotchHub.xcodeproj -scheme NotchHub -configuration Release build
+xcodebuild -project TopDock.xcodeproj -scheme TopDock -configuration Release build
 ```
 
-The internal target/bundle id keeps the project's original codename (`NotchHub`);
-the product it builds is `TopDock.app`.
+The bundle identifier keeps the project's original codename
+(`com.wonyoungchoi.NotchHub`) so upgrades preserve user settings and
+macOS privacy grants.
 
 ## Usage
 

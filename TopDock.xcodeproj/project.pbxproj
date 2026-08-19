@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A1000001 /* NotchHub */ = {
+		A1000001 /* TopDock */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = NotchHub;
+			path = TopDock;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -28,7 +28,7 @@
 		A1000020 = {
 			isa = PBXGroup;
 			children = (
-				A1000001 /* NotchHub */,
+				A1000001 /* TopDock */,
 				A1000021 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -36,7 +36,7 @@
 		A1000021 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1000030 /* NotchHub.app */,
+				A1000030 /* TopDock.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -44,9 +44,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A1000040 /* NotchHub */ = {
+		A1000040 /* TopDock */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1000050 /* Build configuration list for PBXNativeTarget "NotchHub" */;
+			buildConfigurationList = A1000050 /* Build configuration list for PBXNativeTarget "TopDock" */;
 			buildPhases = (
 				A1000011 /* Sources */,
 				A1000010 /* Frameworks */,
@@ -57,13 +57,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				A1000001 /* NotchHub */,
+				A1000001 /* TopDock */,
 			);
-			name = NotchHub;
+			name = TopDock;
 			packageProductDependencies = (
 			);
-			productName = NotchHub;
-			productReference = A1000030 /* NotchHub.app */;
+			productName = TopDock;
+			productReference = A1000030 /* TopDock.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -81,7 +81,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A1000061 /* Build configuration list for PBXProject "NotchHub" */;
+			buildConfigurationList = A1000061 /* Build configuration list for PBXProject "TopDock" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -96,7 +96,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A1000040 /* NotchHub */,
+				A1000040 /* TopDock */,
 			);
 		};
 /* End PBXProject section */
@@ -122,7 +122,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A1000030 /* NotchHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotchHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000030 /* TopDock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TopDock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin XCBuildConfiguration section */
@@ -233,7 +233,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1000050 /* Build configuration list for PBXNativeTarget "NotchHub" */ = {
+		A1000050 /* Build configuration list for PBXNativeTarget "TopDock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000072 /* Debug */,
@@ -242,7 +242,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1000061 /* Build configuration list for PBXProject "NotchHub" */ = {
+		A1000061 /* Build configuration list for PBXProject "TopDock" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000070 /* Debug */,

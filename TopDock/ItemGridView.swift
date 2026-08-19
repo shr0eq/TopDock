@@ -3,9 +3,9 @@ import UniformTypeIdentifiers
 
 extension Notification.Name {
     /// 항목 실행 후 패널을 닫으라는 신호
-    static let hubItemActivated = Notification.Name("NotchHub.hubItemActivated")
+    static let hubItemActivated = Notification.Name("TopDock.hubItemActivated")
     /// 설정 창을 열라는 신호
-    static let openSettingsRequested = Notification.Name("NotchHub.openSettingsRequested")
+    static let openSettingsRequested = Notification.Name("TopDock.openSettingsRequested")
 }
 
 /// Finder 드래그는 public.file-url을 제공하므로 NSItemProvider에서 직접 추출한다.

@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct NotchHubApp: App {
+struct TopDockApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {

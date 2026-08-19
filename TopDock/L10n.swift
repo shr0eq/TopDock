@@ -58,5 +58,5 @@ enum L10n {
 }
 
 extension Notification.Name {
-    static let languageChanged = Notification.Name("NotchHub.languageChanged")
+    static let languageChanged = Notification.Name("TopDock.languageChanged")
 }

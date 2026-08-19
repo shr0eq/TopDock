@@ -67,7 +67,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 테스트 자동화용: 셸에서 패널 열기 트리거
         //   notifyutil 대신: distributed notification
         DistributedNotificationCenter.default().addObserver(
-            forName: Notification.Name("NotchHub.test.showPanel"),
+            forName: Notification.Name("TopDock.test.showPanel"),
             object: nil, queue: .main) { [weak self] _ in
             guard let self, let screen = NSScreen.main ?? NSScreen.screens.first else { return }
             self.panelController.show(at: ScreenGeometry.hotZone(for: screen))

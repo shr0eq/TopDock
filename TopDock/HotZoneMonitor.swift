@@ -148,5 +148,5 @@ final class HotZoneMonitor {
 }
 
 extension Notification.Name {
-    static let hotZonesDidChange = Notification.Name("NotchHub.hotZonesDidChange")
+    static let hotZonesDidChange = Notification.Name("TopDock.hotZonesDidChange")
 }

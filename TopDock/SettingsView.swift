@@ -184,5 +184,5 @@ struct SettingsView: View {
 }
 
 extension Notification.Name {
-    static let externalZoneWidthChanged = Notification.Name("NotchHub.externalZoneWidthChanged")
+    static let externalZoneWidthChanged = Notification.Name("TopDock.externalZoneWidthChanged")
 }

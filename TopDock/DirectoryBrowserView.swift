@@ -137,7 +137,7 @@ struct DirectoryBrowserView: View {
 }
 
 extension Notification.Name {
-    static let browserNeedsReload = Notification.Name("NotchHub.browserNeedsReload")
+    static let browserNeedsReload = Notification.Name("TopDock.browserNeedsReload")
 }
 
 struct EntryCell: View {
