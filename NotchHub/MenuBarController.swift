@@ -14,6 +14,8 @@ final class MenuBarController: NSObject {
     private var settingsWindow: NSWindow?
     private var debugItem: NSMenuItem!
     private var languageObserver: NSObjectProtocol?
+    private var defaultsObserver: NSObjectProtocol?
+    private var builtKorean = L10n.isKorean
 
     init(store: HubStore) {
         self.store = store
@@ -26,9 +28,20 @@ final class MenuBarController: NSObject {
         statusItem.menu = buildMenu()
         languageObserver = NotificationCenter.default.addObserver(
             forName: .languageChanged, object: nil, queue: .main) { [weak self] _ in
-            self?.statusItem.menu = self?.buildMenu()
-            self?.settingsWindow?.title = L10n.settingsTitle
+            self?.rebuildForLanguage()
         }
+        // 어떤 경로로 언어가 바뀌어도 따라가는 방어선 (변화 없으면 no-op)
+        defaultsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self, self.builtKorean != L10n.isKorean else { return }
+            self.rebuildForLanguage()
+        }
+    }
+
+    private func rebuildForLanguage() {
+        builtKorean = L10n.isKorean
+        statusItem.menu = buildMenu()
+        settingsWindow?.title = L10n.settingsTitle
     }
 
     private func buildMenu() -> NSMenu {

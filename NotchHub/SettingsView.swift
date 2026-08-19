@@ -135,12 +135,16 @@ struct SettingsView: View {
                     }
                 }
 
-            Picker(L10n.language, selection: $language) {
+            // .id(language)로 뷰가 통째로 교체되면 .onChange가 삼켜지므로
+            // Binding.set에서 동기적으로 처리한다.
+            Picker(L10n.language, selection: Binding(
+                get: { language },
+                set: { new in
+                    language = new
+                    L10n.set(korean: new == "ko")
+                })) {
                 Text("한국어").tag("ko")
                 Text("English").tag("en")
-            }
-            .onChange(of: language) { _, new in
-                L10n.set(korean: new == "ko")
             }
 
             VStack(alignment: .leading) {
