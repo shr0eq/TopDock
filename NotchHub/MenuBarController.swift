@@ -7,11 +7,13 @@ final class MenuBarController: NSObject {
     /// 토글 후의 표시 상태를 반환하는 클로저
     var onToggleDebugOverlay: (() -> Bool)?
 
+    private let store: HubStore
     private var statusItem: NSStatusItem!
     private var settingsWindow: NSWindow?
     private var debugItem: NSMenuItem!
 
-    override init() {
+    init(store: HubStore) {
+        self.store = store
         super.init()
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
@@ -53,6 +55,8 @@ final class MenuBarController: NSObject {
         debugItem.state = visible ? .on : .off
     }
 
+    func showSettings() { openSettings() }
+
     @objc private func openSettings() {
         if settingsWindow == nil {
             let window = NSWindow(
@@ -60,7 +64,7 @@ final class MenuBarController: NSObject {
                 styleMask: [.titled, .closable, .miniaturizable],
                 backing: .buffered, defer: false)
             window.title = "NotchHub 설정"
-            window.contentView = NSHostingView(rootView: SettingsView())
+            window.contentView = NSHostingView(rootView: SettingsView().environmentObject(store))
             window.isReleasedWhenClosed = false
             window.center()
             settingsWindow = window

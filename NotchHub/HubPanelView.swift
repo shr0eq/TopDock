@@ -26,11 +26,7 @@ struct HubPanelView: View {
 
             Divider()
 
-            // M4: 아이콘 그리드가 여기 들어간다
-            Spacer()
-            Text("여기에 폴더/앱 그리드가 표시됩니다 (M4)")
-                .foregroundStyle(.secondary)
-            Spacer()
+            ItemGridView()
         }
         .frame(width: 520, height: 260)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -39,8 +35,4 @@ struct HubPanelView: View {
                 .strokeBorder(.separator, lineWidth: 0.5)
         )
     }
-}
-
-#Preview {
-    HubPanelView().environmentObject(PanelController.State())
 }

@@ -16,6 +16,11 @@ final class PanelController {
     }
 
     let state = State()
+    private let store: HubStore
+
+    init(store: HubStore) {
+        self.store = store
+    }
 
     private var panel: KeyablePanel?
     private let panelSize = NSSize(width: 520, height: 260)
@@ -75,7 +80,7 @@ final class PanelController {
         p.hidesOnDeactivate = false
         p.becomesKeyOnlyIfNeeded = true
         p.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
-        p.contentView = NSHostingView(rootView: HubPanelView().environmentObject(state))
+        p.contentView = NSHostingView(rootView: HubPanelView().environmentObject(state).environmentObject(store))
         panel = p
         return p
     }

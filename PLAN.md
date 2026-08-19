@@ -219,12 +219,12 @@ panel.contentView = NSHostingView(rootView: HubPanelView().environmentObject(sto
 - [x] **검증**: 글로벌 모니터는 읽기 전용 — 이벤트 소비 불가 구조로 보장
 
 ### M4 — 항목 관리 + 실행
-- [ ] `HubItem` / `HubStore` (Codable 영속화)
-- [ ] 아이콘 로딩 `NSWorkspace.shared.icon(forFile:)` + 캐시
-- [ ] `ItemGridView` — 아이콘 그리드
-- [ ] 클릭 동작: 앱 → 실행, 폴더 → 진입, 파일 → 기본 앱
-- [ ] `SettingsView` — 폴더/앱 추가(`NSOpenPanel`), 삭제, 드래그 순서 변경
-- [ ] **검증**: 재실행 후에도 목록이 유지되는지
+- [x] `HubItem` / `HubStore` (Codable 영속화, 명시적 save — Combine sink는 시드 누락 버그로 폐기)
+- [x] 아이콘 로딩 `NSWorkspace.shared.icon(forFile:)` + NSCache
+- [x] `ItemGridView` — 아이콘 그리드 (LazyVGrid, hover 하이라이트, 빈 상태 UI)
+- [x] 클릭 동작: 열기 + ⌘클릭 → Finder 표시 + 실행 후 패널 닫힘 (폴더 인패널 진입은 M5)
+- [x] `SettingsView` — 폴더/앱 추가(`NSOpenPanel`), 삭제, 드래그 순서 변경
+- [x] **검증**: seed→defaults 저장→재시작 loaded 로그 확인. Downloads 클릭→Finder 열림→패널 닫힘 확인. TCC(Downloads) 허용됨
 
 ### M5 — 폴더 탐색
 - [ ] `DirectoryBrowserView` — 하위 파일 목록, 브레드크럼, 뒤로/상위
