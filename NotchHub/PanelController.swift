@@ -78,7 +78,10 @@ final class PanelController {
         let p = KeyablePanel(contentRect: NSRect(origin: .zero, size: panelSize),
                              styleMask: [.borderless, .nonactivatingPanel],
                              backing: .buffered, defer: false)
-        p.level = .screenSaver                    // 메뉴바/노치 위
+        // 드래그 이미지 레이어(kCGDraggingWindowLevel=500)보다 아래여야
+        // 드롭 대상 히트테스트에 잡힌다. .screenSaver(1000)는 드롭 통과 버그.
+        // .popUpMenu(101)면 전체화면 앱 위에 뜨면서 드롭도 받는다.
+        p.level = .popUpMenu
         p.isOpaque = false
         p.backgroundColor = .clear
         p.hasShadow = true
