@@ -6,7 +6,8 @@ macOS 노치 / 화면 상단 중앙에 마우스를 갖다 대면 지정한 폴�
 
 ## 현재 상태
 
-📋 **기획 단계** — 코드 없음. 구현 착수 전 **Xcode 설치 필요** (아래 참조).
+✅ **M0~M7 완료, 일상 사용 중** — Release가 `/Applications/NotchHub.app`에 설치됨 (2026-08-20).
+백업본: `dist/NotchHub-0.1.0.zip`
 
 ## 문서
 
@@ -23,6 +24,27 @@ macOS 노치 / 화면 상단 중앙에 마우스를 갖다 대면 지정한 폴�
 - 노치 없는 화면(`safeAreaInsets.top == 0`) → **상단 중앙 가상 핫존**으로 폴백 → 요구사항 해결
 - 마우스 hover 감지: `NSEvent` 글로벌+로컬 모니터 — **접근성 권한 불필요**
 - 패널: borderless `NSPanel` + `.nonactivatingPanel` + `.screenSaver` 레벨 + `NSHostingView`
+
+## 재설치 방법
+
+**A. 백업 zip에서 (가장 빠름)** — `dist/NotchHub-0.1.0.zip`을 풀어 `/Applications`에 넣기:
+```
+unzip -o "dist/NotchHub-0.1.0.zip" -d /Applications/
+open /Applications/NotchHub.app
+```
+
+**B. 소스에서 재빌드** (이 폴더 = git 저장소 전체가 소스):
+```
+xcodebuild -project NotchHub.xcodeproj -scheme NotchHub -configuration Release build
+rm -rf /Applications/NotchHub.app
+cp -R ~/Library/Developer/Xcode/DerivedData/NotchHub-*/Build/Products/Release/NotchHub.app /Applications/
+open /Applications/NotchHub.app
+```
+
+참고:
+- 등록 항목·설정은 `~/Library/Preferences/com.wonyoungchoi.NotchHub.plist`에 있어 앱을 지워도 유지된다
+- adhoc 서명이라 **재빌드 후에는 Desktop/Downloads 접근 권한(TCC)을 다시 물을 수 있음** → Allow
+- **다른 맥**으로 zip을 옮기면 Gatekeeper가 차단 → 우클릭 → 열기 1회 (또는 `xattr -d com.apple.quarantine`)
 
 ## ⚠️ 착수 전 필요한 작업
 
