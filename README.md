@@ -1,62 +1,75 @@
-# Folder hub (앱 이름: TopDock)
+# TopDock
 
-macOS 노치 / 화면 상단 중앙에 마우스를 갖다 대면 지정한 폴더·앱 목록이 떠오르는
-개인용 퀵 런처.
-> **개명 이력 (2026-08-20)**: 원래 이름 NotchHub는 기존 앱(notchhub.pro)과 충돌하여 **TopDock**으로 변경.
-> 내부 식별자(번들 ID `com.wonyoungchoi.NotchHub`, Xcode 타깃/폴더명)는 설정·권한 보존을 위해 유지.
- 상용 앱 **Folder Hub**의 핵심 기능을 직접 구현하고,
-**노치 없는 외장 디스플레이에서도 상단 중앙 hover로 동작**하도록 확장한다.
+**Turn your MacBook's notch into a quick launcher.**
+Shove the cursor into the notch — or press <kbd>⌥Space</kbd> — and a floating panel of
+your folders and apps appears. Launch, browse, drop files in, and it gets out of your
+way the moment you leave.
 
-## 현재 상태
+![TopDock demo](docs/demo.gif)
 
-✅ **M0~M7 완료, 일상 사용 중** — Release가 `/Applications/TopDock.app`에 설치됨 (2026-08-20).
-백업본: `dist/TopDock-0.1.0.zip`
+## Features
 
-## 문서
+- **Notch trigger** — push the cursor all the way into the notch to open the panel.
+  A deliberate gesture, so it never pops up while you use the menu bar.
+- **Works without a notch** — on external displays, the top-center edge acts as the
+  trigger zone (width adjustable in Settings).
+- **Global hotkey** — <kbd>⌥Space</kbd> toggles the panel anywhere, no accessibility
+  permission required.
+- **In-panel browsing** — click a folder to browse inside the panel: breadcrumb
+  navigation, sorting, hidden-file toggle, search, and Quick Look preview.
+- **Drag & drop, both ways** — drag files out to Finder or other apps; drop a file
+  onto a folder tile to copy it there. You can even start a drag, shove into the
+  notch mid-drag, and drop — all in one motion.
+- **Workspaces** — separate sets of folders/apps for different contexts, switchable
+  from the panel header.
+- **Stays out of your way** — non-activating panel (never steals focus), auto-hides
+  like the Dock, pin to keep it open. English & Korean UI.
+- **Native and tiny** — pure Swift/SwiftUI + AppKit, zero dependencies, ~1 MB app.
 
-| 문서 | 내용 |
-|---|---|
-| [PLAN.md](PLAN.md) | **메인 문서** — 구현 가능성 결론, 범위, 아키텍처, 마일스톤 M0~M7, 리스크 |
-| [RESEARCH.md](RESEARCH.md) | Folder Hub 원본 앱 분석, 유사 오픈소스, 노치 API 조사, 출처 |
-| [TECH_NOTES.md](TECH_NOTES.md) | 핵심 API 코드 스케치와 함정 모음 |
+## Install
 
-## 한눈에 보는 결론
+1. Download the latest `TopDock-x.y.z.zip` from [Releases](../../releases) and unzip
+   into `/Applications`.
+2. First launch is blocked by Gatekeeper (the app is not notarized):
+   open **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
+3. macOS will ask for access to folders (Desktop, Downloads, …) the first time you
+   browse them — this is the standard per-folder privacy prompt.
 
-- **전부 공개 API로 구현 가능.** 사설 프레임워크 불필요.
-- 노치 위치: `NSScreen.safeAreaInsets` / `auxiliaryTopLeftArea` / `auxiliaryTopRightArea`
-- 노치 없는 화면(`safeAreaInsets.top == 0`) → **상단 중앙 가상 핫존**으로 폴백 → 요구사항 해결
-- 마우스 hover 감지: `NSEvent` 글로벌+로컬 모니터 — **접근성 권한 불필요**
-- 패널: borderless `NSPanel` + `.nonactivatingPanel` + `.screenSaver` 레벨 + `NSHostingView`
+Requires an Apple Silicon Mac running macOS 14 or later.
 
-## 재설치 방법
+### Build from source
 
-**A. 백업 zip에서 (가장 빠름)** — `dist/TopDock-0.1.0.zip`을 풀어 `/Applications`에 넣기:
-```
-unzip -o "dist/TopDock-0.1.0.zip" -d /Applications/
-open /Applications/TopDock.app
-```
-
-**B. 소스에서 재빌드** (이 폴더 = git 저장소 전체가 소스):
-```
+```bash
+git clone https://github.com/shr0eq/TopDock.git
+cd TopDock
 xcodebuild -project NotchHub.xcodeproj -scheme NotchHub -configuration Release build
-rm -rf /Applications/TopDock.app
-cp -R ~/Library/Developer/Xcode/DerivedData/NotchHub-*/Build/Products/Release/TopDock.app /Applications/
-open /Applications/TopDock.app
 ```
 
-참고:
-- 등록 항목·설정은 `~/Library/Preferences/com.wonyoungchoi.NotchHub.plist`에 있어 앱을 지워도 유지된다
-- adhoc 서명이라 **재빌드 후에는 Desktop/Downloads 접근 권한(TCC)을 다시 물을 수 있음** → Allow
-- **다른 맥**으로 zip을 옮기면 Gatekeeper가 차단 → 우클릭 → 열기 1회 (또는 `xattr -d com.apple.quarantine`)
+The internal target/bundle id keeps the project's original codename (`NotchHub`);
+the product it builds is `TopDock.app`.
 
-## ⚠️ 착수 전 필요한 작업
+## Usage
 
-이 맥에는 Xcode가 없고 Command Line Tools만 있으며, 그마저도 매우 오래되었다
-(SDK 11.3 / Swift 5.4, 현재 OS는 macOS 26.5.1).
+| Action | How |
+|---|---|
+| Open panel | Push cursor fully into the notch (or top-center of an external display) · <kbd>⌥Space</kbd> · menu bar icon |
+| Open item | Click (folders browse in-panel; <kbd>⌘</kbd>-click reveals in Finder) |
+| Context menu | Right-click → Open · Reveal in Finder · Quick Look |
+| File something away | Drag it onto a folder tile (copies, originals untouched) |
+| Add items | Drop onto the empty grid area, or Settings → Items |
+| Keep panel open | Pin button in the header |
+| Switch workspace | Workspace menu in the header |
 
-1. Mac App Store에서 **Xcode 설치**
-2. 툴체인 전환:
-   ```
-   sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-   ```
-3. 확인: `xcodebuild -version` → Xcode 15 이상, `swift --version` → Swift 5.9 이상
+## How it works
+
+Notch geometry comes from public `NSScreen` APIs (`safeAreaInsets`,
+`auxiliaryTopLeftArea/RightArea`); the trigger is a 2 pt strip at the very top edge,
+watched by a global+local `mouseMoved` monitor with a dwell timer. The panel is a
+borderless, non-activating `NSPanel` hosting SwiftUI, kept below the system drag
+layer so drops route to it. Design notes and the pitfalls we hit along the way
+(in Korean) live in [docs/](docs/).
+
+## License
+
+[MIT](LICENSE) — © 2026 Won-Young Choi.
+Built with the help of [Claude Code](https://claude.com/claude-code).
