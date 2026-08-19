@@ -21,7 +21,7 @@ final class MenuBarController: NSObject {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "rectangle.topthird.inset.filled",
-                                   accessibilityDescription: "NotchHub")
+                                   accessibilityDescription: "TopDock")
         }
         statusItem.menu = buildMenu()
         languageObserver = NotificationCenter.default.addObserver(

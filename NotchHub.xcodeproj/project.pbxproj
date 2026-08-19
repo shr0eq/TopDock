@@ -188,7 +188,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = NotchHub;
+				INFOPLIST_KEY_CFBundleDisplayName = TopDock;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Made by Won-Young Choi";
@@ -198,7 +198,7 @@
 				);
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wonyoungchoi.NotchHub;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = TopDock;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Debug;
@@ -215,7 +215,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = NotchHub;
+				INFOPLIST_KEY_CFBundleDisplayName = TopDock;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Made by Won-Young Choi";
@@ -225,7 +225,7 @@
 				);
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.wonyoungchoi.NotchHub;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = TopDock;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 			};
 			name = Release;

@@ -4,7 +4,7 @@
 > (Folder Hub 클론 + 외장 디스플레이 지원 확장)
 
 - 작성일: 2026-08-19
-- 프로젝트 코드명: **NotchHub** (변경 가능)
+- 프로젝트 코드명: ~~NotchHub~~ → **TopDock** (2026-08-20 개명 — notchhub.pro와 충돌)
 - 위치: `~/Desktop/Claude Code/Folder hub/`
 
 ---

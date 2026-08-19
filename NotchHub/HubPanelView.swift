@@ -93,7 +93,7 @@ struct HubPanelView: View {
                         }
                     }
                 } label: {
-                    Text(store.current?.name ?? "NotchHub")
+                    Text(store.current?.name ?? "TopDock")
                         .font(.headline)
                 }
                 .menuStyle(.borderlessButton)

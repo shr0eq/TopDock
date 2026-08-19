@@ -17,7 +17,7 @@ enum L10n {
     static var showPanel: String { isKorean ? "패널 열기" : "Show Panel" }
     static var settings: String { isKorean ? "설정…" : "Settings…" }
     static var debugHotZones: String { isKorean ? "디버그: 핫존 표시" : "Debug: Show Hot Zones" }
-    static var about: String { isKorean ? "NotchHub 정보" : "About NotchHub" }
+    static var about: String { isKorean ? "TopDock 정보" : "About TopDock" }
     static var quit: String { isKorean ? "종료" : "Quit" }
 
     // 패널
@@ -52,7 +52,7 @@ enum L10n {
     static var dragToReorder: String { isKorean ? "드래그로 순서 변경" : "Drag to reorder" }
     static var launchAtLogin: String { isKorean ? "로그인 시 자동 실행" : "Launch at Login" }
     static var language: String { isKorean ? "언어" : "Language" }
-    static var settingsTitle: String { isKorean ? "NotchHub 설정" : "NotchHub Settings" }
+    static var settingsTitle: String { isKorean ? "TopDock 설정" : "TopDock Settings" }
     static var hotKeyHint: String { isKorean ? "전역 단축키: ⌥Space" : "Global hotkey: ⌥Space" }
     static var externalZoneWidth: String { isKorean ? "외장 화면 핫존 너비" : "External display hot zone width" }
 }
